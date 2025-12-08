@@ -22,9 +22,9 @@ COMMAND_TIMEOUT = 2.0  # seconds - stop if no command received
 LOG_LEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR
 LOG_FILE = "robot_control.log"
 
-# Camera Settings (optional - for camera streaming)
-CAMERA_ENABLED = False  # Set to True if using Pi Camera or USB webcam
+# Camera Settings
+CAMERA_ENABLED = True
 CAMERA_WIDTH = 640
 CAMERA_HEIGHT = 480
-CAMERA_FPS = 30
+CAMERA_FPS = 15  # Lower FPS for smoother streaming over network
 
