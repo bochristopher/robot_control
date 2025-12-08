@@ -91,10 +91,19 @@ def init_camera() -> bool:
             return True
         
         try:
-            camera = cv2.VideoCapture(0)
-            if not camera.isOpened():
+            # Try device path first, then index with V4L2 backend
+            for source in ['/dev/video0', 0]:
+                camera = cv2.VideoCapture(source, cv2.CAP_V4L2)
+                if camera.isOpened():
+                    ret, test_frame = camera.read()
+                    if ret:
+                        logger.info(f"Camera opened with source: {source}")
+                        break
+                    camera.release()
+                    camera = None
+            
+            if camera is None or not camera.isOpened():
                 logger.error("Could not open camera")
-                camera = None
                 return False
             
             # Set resolution
@@ -310,9 +319,14 @@ class MJPEGHandler(BaseHTTPRequestHandler):
             self.send_error(503, "Camera not available")
 
 
+class ReusableHTTPServer(HTTPServer):
+    """HTTP server that allows address reuse."""
+    allow_reuse_address = True
+
+
 def run_http_server():
     """Run the HTTP server in a separate thread."""
-    server = HTTPServer(('0.0.0.0', 8080), MJPEGHandler)
+    server = ReusableHTTPServer(('0.0.0.0', 8080), MJPEGHandler)
     logger.info("HTTP server started on http://0.0.0.0:8080")
     server.serve_forever()
 
