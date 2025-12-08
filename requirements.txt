@@ -1,0 +1,10 @@
+# Robot Control WebSocket Server - Dependencies
+# Install with: pip install -r requirements.txt
+
+websockets>=12.0
+pyserial>=3.5
+
+# Optional - for camera streaming:
+# opencv-python>=4.8.0
+# picamera2>=0.3.0  # For Raspberry Pi Camera
+
